@@ -102,6 +102,60 @@ public class ServiceTest
         Assert.AreEqual(false, service.GetPNs().Find(x => x.antalEnheder == 8).givDosis(d));
     }
 
+
+
+    [TestMethod]
+    public void AnbefaletDosisprDøgnLet()
+    {
+        Patient patient = service.GetPatienter().Find(x => x.cprnr == "123457-4321");
+        Laegemiddel lm = service.GetLaegemidler().Find(l => l.navn == "Acetylsalicylsyre");
+
+        Assert.AreEqual(7, service.GetPatienter().Count());
+
+        service.GetAnbefaletDosisPerDøgn(patient.PatientId, lm.LaegemiddelId);
+        Assert.AreEqual(2.01, service.GetAnbefaletDosisPerDøgn(patient.PatientId, lm.LaegemiddelId), 0.01);
+
+    }
+
+
+    [TestMethod]
+    public void AnbefaletDosisprDøgnNormal()
+    {
+        Patient patient = service.GetPatienter().Find(x => x.cprnr == "123456-1234");
+        Laegemiddel lm = service.GetLaegemidler().Find(l => l.navn == "Paracetamol");
+
+        Assert.AreEqual(7, service.GetPatienter().Count());
+
+        service.GetAnbefaletDosisPerDøgn(patient.PatientId, lm.LaegemiddelId);
+        Assert.AreEqual(131.55, service.GetAnbefaletDosisPerDøgn(patient.PatientId, lm.LaegemiddelId), 0.01);
+
+    }
+
+
+
+    [TestMethod]
+    public void AnbefaletDosisprDøgnTung()
+    {
+
+        Patient patient = service.GetPatienter().Find(x => x.cprnr == "123459-4301");
+        Laegemiddel lm = service.GetLaegemidler().Find(l => l.navn == "Fucidin");
+
+        Assert.AreEqual(7, service.GetPatienter().Count());
+
+        service.GetAnbefaletDosisPerDøgn(patient.PatientId, lm.LaegemiddelId);
+        Assert.AreEqual(3.76, service.GetAnbefaletDosisPerDøgn(patient.PatientId, lm.LaegemiddelId), 0.01);
+
+    }
+
+
+
+
+
+
+
+
+
+
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void TestAtKodenSmiderEnException()

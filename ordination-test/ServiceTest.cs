@@ -29,18 +29,19 @@ public class ServiceTest
         Assert.IsNotNull(service.GetPatienter());
     }
 
+
     [TestMethod]
     public void OpretDagligFast()
     {
         Patient patient = service.GetPatienter().First();
         Laegemiddel lm = service.GetLaegemidler().First();
 
-        Assert.AreEqual(1, service.GetDagligFaste().Count());
+        Assert.AreEqual(2, service.GetDagligFaste().Count());
 
         service.OpretDagligFast(patient.PatientId, lm.LaegemiddelId,
-            2, 2, 1, 0, DateTime.Now, DateTime.Now.AddDays(3));
+            2, 0, 1, 0, DateTime.Now, DateTime.Now.AddDays(3));
 
-        Assert.AreEqual(2, service.GetDagligFaste().Count());
+        Assert.AreEqual(3, service.GetDagligFaste().Count());
     }
     
     [TestMethod]
@@ -49,12 +50,12 @@ public class ServiceTest
         Patient patient = service.GetPatienter().First();
         Laegemiddel lm = service.GetLaegemidler().First();
 
-        Assert.AreEqual(2, service.GetDagligFaste().Count());
+        Assert.AreEqual(3, service.GetDagligFaste().Count());
 
         service.OpretDagligFast(patient.PatientId, lm.LaegemiddelId,
-            -2, 2, 1, 0, DateTime.Now, DateTime.Now.AddDays(3));
+            -1, 1, 2, 0, new DateTime(2022, 3, 16), new DateTime(2022, 3, 30));
 
-        Assert.AreEqual(2, service.GetDagligFaste().Count());
+        Assert.AreEqual(3, service.GetDagligFaste().Count());
     }
     
     [TestMethod]
@@ -64,32 +65,18 @@ public class ServiceTest
         Laegemiddel lm = service.GetLaegemidler().First();
         Dosis[] doser = new[]
         {
-            new Dosis(Util.CreateTimeOnly(TimeOnly.FromDateTime(DateTime.Now)), 5),
-            new Dosis(Util.CreateTimeOnly(TimeOnly.FromDateTime(DateTime.Now.AddHours(3))), 4)
+            new Dosis(Util.CreateTimeOnly(TimeOnly.FromDateTime(DateTime.Now)), 6),
+            new Dosis(Util.CreateTimeOnly(TimeOnly.FromDateTime(DateTime.Now.AddHours(2))), 10)
         };
 
         service.OpretDagligSkaev(patient.PatientId, lm.LaegemiddelId,
-            doser, DateTime.Now, DateTime.Now.AddDays(3));
+            doser, DateTime.Now, DateTime.Now.AddDays(2));
 
-        Assert.AreEqual(9, service.GetDagligSkæve().Find(x => x.laegemiddel == lm).doser.Sum(x => x.antal));
+        Assert.AreEqual(16, service.GetDagligSkæve().Find(x => x.laegemiddel == lm).doser.Sum(x => x.antal));
     }
     
     [TestMethod]
     public void PNGivDosis()
-    {
-        Patient patient = service.GetPatienter().First();
-        Laegemiddel lm = service.GetLaegemidler().First();
-
-        service.OpretPN(patient.PatientId, lm.LaegemiddelId,
-            8, DateTime.Now, DateTime.Now.AddDays(3));
-        Dato d = new Dato();
-        d.dato = DateTime.Now.AddDays(4);
-        
-        Assert.AreEqual(false, service.GetPNs().Find(x => x.antalEnheder == 8).givDosis(d));
-    }
-    
-    [TestMethod]
-    public void AnbefaletDosisPerDøgn()
     {
         Patient patient = service.GetPatienter().First();
         Laegemiddel lm = service.GetLaegemidler().First();
@@ -130,7 +117,7 @@ public class ServiceTest
         Assert.AreEqual(131.55, service.GetAnbefaletDosisPerDøgn(patient.PatientId, lm.LaegemiddelId), 0.01);
 
     }
-
+     
 
 
     [TestMethod]

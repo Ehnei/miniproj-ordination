@@ -32,11 +32,16 @@ public class DataService
             patients[3] = new Patient("011064-1522", "Ulla Nielsen", 59.9);
             patients[4] = new Patient("123456-1234", "Ib Hansen", 87.7);
 
+            patients[5] = new Patient("123457-4321", "Sofie Jørgensen", 20.1);
+            patients[6] = new Patient("123459-4301", "JØrgen Jørgensen", 150.5);
+
             db.Patienter.Add(patients[0]);
             db.Patienter.Add(patients[1]);
             db.Patienter.Add(patients[2]);
             db.Patienter.Add(patients[3]);
             db.Patienter.Add(patients[4]);
+            db.Patienter.Add(patients[5]);
+            db.Patienter.Add(patients[6]);
             db.SaveChanges();
         }
 
@@ -71,7 +76,8 @@ public class DataService
             ordinationer[3] = new PN(new DateTime(2021, 1, 1), new DateTime(2021, 1, 12), 123, lm[1]);
             ordinationer[4] = new DagligFast(new DateTime(2021, 1, 10), new DateTime(2021, 1, 12), lm[1], 2, 0, 1, 0);
             ordinationer[5] = new DagligSkæv(new DateTime(2021, 1, 23), new DateTime(2021, 1, 24), lm[2]);
-            
+            ordinationer[6] = new DagligFast(new DateTime(2022, 3, 16), new DateTime(2022, 3, 30), lm[4], -1, 1, 2, 0);
+
             ((DagligSkæv) ordinationer[5]).doser = new Dosis[] { 
                 new Dosis(CreateTimeOnly(12, 0, 0), 0.5),
                 new Dosis(CreateTimeOnly(12, 40, 0), 1),
@@ -86,6 +92,7 @@ public class DataService
             db.Ordinationer.Add(ordinationer[3]);
             db.Ordinationer.Add(ordinationer[4]);
             db.Ordinationer.Add(ordinationer[5]);
+            db.Ordinationer.Add(ordinationer[6]);
 
             db.SaveChanges();
 
@@ -95,6 +102,7 @@ public class DataService
             p[3].ordinationer.Add(ordinationer[3]);
             p[1].ordinationer.Add(ordinationer[4]);
             p[1].ordinationer.Add(ordinationer[5]);
+            p[1].ordinationer.Add(ordinationer[6]);
 
             db.SaveChanges();
         }

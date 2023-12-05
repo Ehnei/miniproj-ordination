@@ -13,7 +13,7 @@ public class DataService
 
     public DataService(OrdinationContext db) {
         this.db = db;
-    }
+    } 
 
     /// <summary>
     /// Seeder noget nyt data i databasen, hvis det er nødvendigt.
@@ -21,7 +21,7 @@ public class DataService
     public void SeedData() {
 
         // Patients
-        Patient[] patients = new Patient[5];
+        Patient[] patients = new Patient[7];
         patients[0] = db.Patienter.FirstOrDefault()!;
 
         if (patients[0] == null)
@@ -64,7 +64,7 @@ public class DataService
             db.SaveChanges();
         }
 
-        Ordination[] ordinationer = new Ordination[6];
+        Ordination[] ordinationer = new Ordination[7];
         ordinationer[0] = db.Ordinationer.FirstOrDefault()!;
         if (ordinationer[0] == null) {
             Laegemiddel[] lm = db.Laegemiddler.ToArray();

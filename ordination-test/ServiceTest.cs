@@ -57,24 +57,25 @@ public class ServiceTest
 
         Assert.AreEqual(3, service.GetDagligFaste().Count());
     }
+
+
     
     [TestMethod]
     public void DagligSkaevDognDosis()
     {
-        Patient patient = service.GetPatienter().First();
-        Laegemiddel lm = service.GetLaegemidler().First();
-        Dosis[] doser = new[]
-        {
-            new Dosis(Util.CreateTimeOnly(TimeOnly.FromDateTime(DateTime.Now)), 6),
-            new Dosis(Util.CreateTimeOnly(TimeOnly.FromDateTime(DateTime.Now.AddHours(2))), 10)
-        };
+        DagligSkæv dagligSkæv = new DagligSkæv();
 
-        service.OpretDagligSkaev(patient.PatientId, lm.LaegemiddelId,
-            doser, DateTime.Now, DateTime.Now.AddDays(2));
+        dagligSkæv.opretDosis(DateTime.Now, 6);
+        dagligSkæv.opretDosis(DateTime.Now.AddDays(2), 10);
 
-        Assert.AreEqual(16, service.GetDagligSkæve().Find(x => x.laegemiddel == lm).doser.Sum(x => x.antal));
+        double result = dagligSkæv.doegnDosis();
+
+        Assert.AreEqual(16, result);
+
     }
-    
+
+
+
     [TestMethod]
     public void PNGivDosis()
     {

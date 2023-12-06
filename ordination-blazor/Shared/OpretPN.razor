@@ -83,9 +83,9 @@
             return;
         }
         //giver fejlbesked hvis antal er mindre end nul
-        if (antalEnheder < 0)
+        if (antalEnheder < 1)
         {
-            onFejl?.Invoke("Antal kan ikke være mindre end 0");
+            onFejl?.Invoke("Antal kan ikke være mindre end 1");
             return;
         }
         //giver fejlbesked hvis start dato er større end slut dato

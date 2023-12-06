@@ -117,9 +117,10 @@
             onFejl?.Invoke($"Dosis overskrider anbefalet dosis");
             return;
         }
-        if (doser.Exists(x => x.antal < 0))
+        //giver fejlbesked hvis dosis er mindre end 1
+        if (doser.Exists(x => x.antal < 1))
         {
-            onFejl?.Invoke($"Dosis kan ikke være mindre end 0");
+            onFejl?.Invoke($"Dosis kan ikke være mindre end 1");
             return;
         }
         //giver fejlbesked hvis start dato er større end slut dato
@@ -128,6 +129,7 @@
             onFejl?.Invoke($"Start dato er større end slut dato");
             return;
         }
+        
         Console.WriteLine("Opret");
         var ordination = await apiService.OpretDagligSkaev(Patient.id, laegemiddel.LaegemiddelId, doser.ToArray(), StartDato, SlutDato);
         Console.WriteLine("Oprettet!");
@@ -138,6 +140,18 @@
     private void OpretDosis() {
         Console.WriteLine(Tid);
         Console.WriteLine(Antal);
+        //giver fejlbesked hvis antal er mindre end 1
+        if (Antal < 1)
+        {
+            onFejl?.Invoke("Antal kan ikke være mindre end 1");
+            return;
+        }
+        //giver fejlbesked hvis en dosis med samme antal allerede er oprettet
+        if (doser.Exists(x => TimeOnly.FromDateTime(x.tid) == Tid))
+        {
+            onFejl?.Invoke("Dosis kan ikke have samme tidspunkt");
+            return;
+        }
         doser.Add(new Dosis(Util.CreateTimeOnly(Tid), Antal));
         
     }

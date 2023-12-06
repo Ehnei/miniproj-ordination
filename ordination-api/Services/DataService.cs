@@ -148,8 +148,8 @@ public class DataService
 
         PN d = new PN(startDato, slutDato, antal, l);
 
-        //Så længe patiener ikke null og antalenheder ikke er større end Getanbefaletdosisprdøgn og antalenheder ikke er negativ
-        if (p != null && d.antalEnheder <= GetAnbefaletDosisPerDøgn(patientId, laegemiddelId) && d.antalEnheder >= 0)
+        //Så længe patiener ikke null og antalenheder ikke er større end Getanbefaletdosisprdøgn og antalenheder ikke er mindre end 1
+        if (p != null && d.antalEnheder <= GetAnbefaletDosisPerDøgn(patientId, laegemiddelId) && d.antalEnheder >= 1)
         {
             p.ordinationer.Add(d);
             db.SaveChanges();
@@ -190,8 +190,8 @@ public class DataService
 
         DagligSkæv d = new DagligSkæv(startDato, slutDato, l, doser);
 
-        // Så længe patienten ikke null og Døgndosis ikke er større end anbefaletdosis og dosisantal ikke er negativ
-        if (patient != null && doser.Sum(x => x.antal) <= GetAnbefaletDosisPerDøgn(patientId, laegemiddelId) && !doser.Any(x => x.antal < 0))
+        // Så længe patienten ikke null og Døgndosis ikke er større end anbefaletdosis og dosisantal ikke er mindre end 1
+        if (patient != null && doser.Sum(x => x.antal) <= GetAnbefaletDosisPerDøgn(patientId, laegemiddelId) && !doser.Any(x => x.antal < 1))
         {
             patient.ordinationer.Add(d);
             db.SaveChanges();

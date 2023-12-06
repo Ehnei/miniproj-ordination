@@ -4,6 +4,7 @@ using System.Text.Json;
 using shared.Model;
 using static shared.Util;
 using Data;
+using System;
 
 namespace Service;
 
@@ -140,11 +141,14 @@ public class DataService
 
     public PN OpretPN(int patientId, int laegemiddelId, double antal, DateTime startDato, DateTime slutDato) {
         // TODO: Implement!
+        // her finder det specifikke laegemiddel udfra laegmiddelId og specifikke patient og deres id
         Laegemiddel l = db.Laegemiddler.Find(laegemiddelId);
         Patient p = db.Patienter.FirstOrDefault(p => p.PatientId == patientId);
 
+
         PN d = new PN(startDato, slutDato, antal, l);
 
+        //Så længe patiener ikke null og antalenheder ikke er større end Getanbefaletdosisprdøgn og antalenheder ikke er negativ
         if (p != null && d.antalEnheder <= GetAnbefaletDosisPerDøgn(patientId, laegemiddelId) && d.antalEnheder >= 0)
         {
             p.ordinationer.Add(d);
@@ -160,11 +164,13 @@ public class DataService
         DateTime startDato, DateTime slutDato) {
 
         // TODO: Implement!
+        // her finder det specifikke laegemiddel udfra laegmiddelId og specifikke patient og deres id
         Laegemiddel l = db.Laegemiddler.Find(laegemiddelId);
         Patient patient = db.Patienter.FirstOrDefault(p => p.PatientId == patientId);
 
         DagligFast d = new DagligFast(startDato, slutDato, l, antalMorgen, antalMiddag, antalAften, antalNat);
 
+        // Så længe patienten ikke null og Døgndosis ikke er større end anbefaletdosis og døgndosis ikke er negativ
         if (patient != null && (d.MorgenDosis.antal + d.MiddagDosis.antal + d.AftenDosis.antal + d.NatDosis.antal) <= GetAnbefaletDosisPerDøgn(patientId, laegemiddelId)
             && d.MorgenDosis.antal >= 0 && d.MiddagDosis.antal >= 0 && d.AftenDosis.antal >= 0 && d.NatDosis.antal >= 0)
         {
@@ -178,11 +184,13 @@ public class DataService
 
     public DagligSkæv OpretDagligSkaev(int patientId, int laegemiddelId, Dosis[] doser, DateTime startDato, DateTime slutDato) {
         // TODO: Implement!
+        // her finder det specifikke laegemiddel udfra laegmiddelId og specifikke patient og deres id
         Laegemiddel l = db.Laegemiddler.Find(laegemiddelId);
         Patient patient = db.Patienter.FirstOrDefault(p => p.PatientId == patientId);
 
         DagligSkæv d = new DagligSkæv(startDato, slutDato, l, doser);
-        
+
+        // Så længe patienten ikke null og Døgndosis ikke er større end anbefaletdosis
         if (patient != null && doser.Sum(x => x.antal) <= GetAnbefaletDosisPerDøgn(patientId, laegemiddelId))
         {
             patient.ordinationer.Add(d);
@@ -197,8 +205,10 @@ public class DataService
 
     public string AnvendOrdination(int id, Dato dato) {
         // TODO: Implement!
+        //her finder vi den specifikke pn udfra ordinationsId
         PN pn = db.PNs.FirstOrDefault(p => p.OrdinationId == id);
 
+        //Hvis Dosis er inde if gyldighedsprioden så returner den anvendt
         if (pn.givDosis(dato))
         {
             db.SaveChanges();
@@ -217,9 +227,11 @@ public class DataService
     /// <returns></returns>
 	public double GetAnbefaletDosisPerDøgn(int patientId, int laegemiddelId) {
         // TODO: Implement!
+        // her finder det specifikke laegemiddel udfra laegmiddelId og specifikke patient og deres id
         Patient p = db.Patienter.FirstOrDefault(p => p.PatientId == patientId);
         Laegemiddel l = db.Laegemiddler.FirstOrDefault(l => l.LaegemiddelId == laegemiddelId);
 
+        //Her udregner vi anbefaletdosisprdøgn, og tager udgangspunkt i patientensvægt og laegemiddel faktor for den specifikke vægtklasse
         if (p.vaegt < 25)
         {
             return l.enhedPrKgPrDoegnLet * p.vaegt;

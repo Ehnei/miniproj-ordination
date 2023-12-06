@@ -117,6 +117,11 @@
             onFejl?.Invoke($"Dosis overskrider anbefalet dosis");
             return;
         }
+        if (doser.Exists(x => x.antal < 0))
+        {
+            onFejl?.Invoke($"Dosis kan ikke være mindre end 0");
+            return;
+        }
         //giver fejlbesked hvis start dato er større end slut dato
         if (DateTime.Compare(StartDato,SlutDato) > 0)
         {

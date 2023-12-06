@@ -190,8 +190,8 @@ public class DataService
 
         DagligSkæv d = new DagligSkæv(startDato, slutDato, l, doser);
 
-        // Så længe patienten ikke null og Døgndosis ikke er større end anbefaletdosis
-        if (patient != null && doser.Sum(x => x.antal) <= GetAnbefaletDosisPerDøgn(patientId, laegemiddelId))
+        // Så længe patienten ikke null og Døgndosis ikke er større end anbefaletdosis og dosisantal ikke er negativ
+        if (patient != null && doser.Sum(x => x.antal) <= GetAnbefaletDosisPerDøgn(patientId, laegemiddelId) && !doser.Any(x => x.antal < 0))
         {
             patient.ordinationer.Add(d);
             db.SaveChanges();

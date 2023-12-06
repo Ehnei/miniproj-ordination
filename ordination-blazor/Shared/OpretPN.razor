@@ -76,11 +76,13 @@
         if (Patient == null || laegemiddel == null) {
             return;
         }
+        //giver fejlbesked hvis dosis overskrider anbefalet dosis
         if (AnbefaletDosisPerDøgn < antalEnheder)
         {
             onFejl?.Invoke($"Dosis overskrider anbefalet dosis");
             return;
         }
+        //giver fejlbesked hvis start dato er større end slut dato
         if (DateTime.Compare(StartDato,SlutDato) > 0)
         {
             onFejl?.Invoke($"Start dato er større end slut dato");
